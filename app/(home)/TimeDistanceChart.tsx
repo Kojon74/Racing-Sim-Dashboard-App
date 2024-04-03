@@ -1,5 +1,4 @@
 "use client";
-
 import * as d3 from "d3";
 import { useEffect, useState } from "react";
 import { storage } from "../utils/firebase";
@@ -11,13 +10,6 @@ const TimeDistanceChart = () => {
   const width = 1000;
   const height = 500;
   const margin = 0;
-
-  console.log(
-    d3.max(
-      data,
-      (d: { distance_offset: number; time_elapsed: number }) => d.time_elapsed
-    )
-  );
 
   const x = d3.scaleLinear([0, 1], [margin, width - margin]);
   const y = d3.scaleLinear(
@@ -41,7 +33,6 @@ const TimeDistanceChart = () => {
         ref(storage, "BvexKpnnFuxvO6PmbmnX/1709761866932.csv")
       );
       const parsedData = await d3.csv(url, d3.autoType);
-      console.log(parsedData);
       setData(parsedData);
     })();
   }, []);

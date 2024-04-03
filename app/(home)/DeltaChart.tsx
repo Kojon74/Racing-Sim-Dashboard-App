@@ -1,16 +1,35 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
+import { Lap } from "@/app/(models)/Lap";
 
-type Props = { delta: any; dims: { h: number; w: number; m: number } };
+type Props = {
+  laps: Lap[];
+  lapsData: any;
+  dims: { h: number; w: number; m: number };
+};
 
-const DeltaChart = ({ delta, dims }: Props) => {
+const DeltaChart = ({ laps, lapsData, dims }: Props) => {
   const svgRef = useRef();
 
-  console.log(delta);
+  const [deltas, setDeltas] = useState([]);
 
   useEffect(() => {
-    if (delta.length)
+    if (lapsData.length)
+      (async () => {
+        const bisector = d3.bisector((d) => d.distance_offset);
+        const deltaData = lapsData.slice(1).map((lapData) =>
+          lapsData[0].map(({ distance_offset: d, time_elapsed: t }) => ({
+            distance_offset: d,
+            delta: t - lapData[bisector.left(lapData, d)].time_elapsed,
+          }))
+        );
+        setDeltas(deltaData);
+      })();
+  }, [lapsData]);
+
+  useEffect(() => {
+    if (deltas.length)
       (async () => {
         const svg = d3
           .select(svgRef.current)
@@ -24,11 +43,11 @@ const DeltaChart = ({ delta, dims }: Props) => {
           .scaleLinear()
           .domain([
             d3.min(
-              delta,
+              deltas[0],
               (d: { distance_offset: number; delta: number }) => d.delta
             ),
             d3.max(
-              delta,
+              deltas[0],
               (d: { distance_offset: number; delta: number }) => d.delta
             ),
           ])
@@ -61,13 +80,13 @@ const DeltaChart = ({ delta, dims }: Props) => {
         // setting up the data for the svg
         svg
           .selectAll(".line")
-          .data([delta])
+          .data(deltas)
           .join("path")
           .attr("d", (d) => line(d))
           .attr("stroke", "red")
           .attr("fill", "none");
       })();
-  }, [delta]);
+  }, [deltas]);
 
   return <svg ref={svgRef} style={{ margin: dims.m }}></svg>;
 };

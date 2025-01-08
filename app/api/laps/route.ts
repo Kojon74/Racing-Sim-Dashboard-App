@@ -4,10 +4,10 @@ import { NextRequest, NextResponse } from "next/server";
 // Upload a lap
 export const POST = async (req: NextRequest) => {
   try {
-    const { lapTime, track, user, sectorTimes, timestamp } = await req.json();
+    const { lapTime, circuit, user, sectorTimes, timestamp } = await req.json();
     const newLap = Lap.create({
       lapTime,
-      track,
+      circuit,
       user,
       sectorTimes,
       date: new Date(timestamp),

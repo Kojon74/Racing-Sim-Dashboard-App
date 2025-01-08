@@ -7,9 +7,9 @@ export const GET = async (
   { params }: { params: { [key: string]: string } }
 ) => {
   try {
-    const { userId, trackId, timestamp } = params;
+    const { userId, circuitId, timestamp } = params;
     const telemetryUrl = await getDownloadURL(
-      ref(storage, `${userId}/${trackId}/${timestamp}.csv`)
+      ref(storage, `${userId}/${circuitId}/${timestamp}.csv`)
     );
     const telemetry = await (await fetch(telemetryUrl)).text();
     return NextResponse.json({ telemetry }, { status: 200 });
@@ -24,11 +24,11 @@ export const POST = async (
   req: NextRequest,
   { params }: { params: { [key: string]: string } }
 ) => {
-  const { userId, trackId, timestamp } = params;
+  const { userId, circuitId, timestamp } = params;
   try {
     const telemetry = await req.text();
     uploadString(
-      ref(storage, `${userId}/${trackId}/${timestamp}.csv`),
+      ref(storage, `${userId}/${circuitId}/${timestamp}.csv`),
       telemetry
     );
     return NextResponse.json({}, { status: 200 });

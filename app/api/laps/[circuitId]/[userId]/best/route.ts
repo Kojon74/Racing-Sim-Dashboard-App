@@ -1,13 +1,13 @@
 import Lap from "@/app/(models)/Lap";
 import { NextRequest, NextResponse } from "next/server";
 
-// Get track matching track-name
+// Get circuit matching circuit-name
 export const GET = async (req: NextRequest, { params }) => {
-  const { trackId, userId } = params;
+  const { circuitId, userId } = params;
 
   try {
     const bestLap = await Lap.findOne({
-      track: trackId,
+      circuit: circuitId,
       "user.id": userId,
     }).sort("lapTime");
 

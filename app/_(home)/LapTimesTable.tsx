@@ -3,7 +3,7 @@ import React, { Dispatch, SetStateAction, useState } from "react";
 import LapTimesRow from "./LapTimesRow";
 import Dropdown from "../components/Dropdown";
 import { Lap } from "@/app/(models)/Lap";
-import { Track } from "../(models)/Track";
+import { Track } from "../(models)/Circuit";
 import { User } from "../(models)/User";
 
 type Props = {

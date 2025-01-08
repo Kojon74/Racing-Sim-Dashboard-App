@@ -11,7 +11,7 @@ const lapSchema = new Schema({
     },
     required: true,
   },
-  track: { type: Schema.Types.ObjectId, ref: "Track", required: true },
+  circuit: { type: Schema.Types.ObjectId, ref: "Circuit", required: true },
   lapTime: { type: Number, required: true },
   date: { type: Date, required: true },
   sectorTimes: { type: [Number], required: true },

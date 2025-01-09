@@ -17,12 +17,12 @@ const CustomNavbar = (props: Props) => {
       </NavbarBrand>
       <NavbarContent justify="end">
         <NavbarItem>
-          <Link className="btn" href="/log-in">
+          <Link className="btn" href="/login">
             Log in
           </Link>
         </NavbarItem>
         <NavbarItem>
-          <Link className="btn btn-outline" href="/sign-up">
+          <Link className="btn btn-outline" href="/signup">
             Sign up
           </Link>
         </NavbarItem>

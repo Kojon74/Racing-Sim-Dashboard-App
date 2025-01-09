@@ -32,3 +32,11 @@ body {
     text-wrap: balance;
   }
 }
+
+h1 {
+  @apply text-8xl font-black
+}
+
+h2 {
+  @apply text-6xl text-slate-300
+}

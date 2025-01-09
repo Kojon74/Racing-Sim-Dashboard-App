@@ -7,7 +7,7 @@ const lapSchema = new Schema({
   user: {
     type: {
       id: { type: Schema.Types.ObjectId, ref: "User", required: true },
-      name: { type: String, required: true },
+      username: { type: String, required: true },
     },
     required: true,
   },

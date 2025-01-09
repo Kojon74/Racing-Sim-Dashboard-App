@@ -28,7 +28,7 @@ const LapTimesRow = ({ lap, place, setSelectedLaps }: Props) => {
         <input type="checkbox" className="checkbox" onChange={handleClick} />
       </td>
       <th>{place}</th>
-      <td>{user.name}</td>
+      <td>{user.username}</td>
       <td>{msToTimeStr(lapTime)}</td>
       <td>{new Date(date).toDateString()}</td>
     </tr>

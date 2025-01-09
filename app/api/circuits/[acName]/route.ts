@@ -6,9 +6,9 @@ export const GET = async (
   req: NextRequest,
   { params }: { params: { [key: string]: string } }
 ) => {
-  const acName = params.acName;
+  const grandPrix = params.grandPrix;
   try {
-    const circuit = await Circuit.findOne({ acName });
+    const circuit = await Circuit.findOne({ grandPrix });
     return NextResponse.json({ circuit }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ message: "Error", error }, { status: 500 });

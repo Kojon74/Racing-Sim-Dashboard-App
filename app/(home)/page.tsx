@@ -2,7 +2,7 @@ import CircuitsTable from "./CircuitsTable";
 
 type Props = {};
 
-const page = (props: Props) => {
+const Page = (props: Props) => {
   return (
     <section>
       <h1 className="text-4xl">F1 Sim Racing Dashbard</h1>
@@ -11,4 +11,4 @@ const page = (props: Props) => {
   );
 };
 
-export default page;
+export default Page;

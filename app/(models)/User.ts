@@ -4,7 +4,7 @@ mongoose.connect(process.env.MONGODB_URI as string);
 mongoose.Promise = global.Promise;
 
 const userSchema = new Schema({
-  name: { type: String, required: true, maxLength: 100 },
+  username: { type: String, required: true, maxLength: 100 },
   lastOnline: { type: Date, required: true },
 });
 

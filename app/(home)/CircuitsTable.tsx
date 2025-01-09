@@ -1,24 +1,10 @@
 "use client";
-import React, { useEffect, useState } from "react";
 import { Circuit } from "../(models)/Circuit";
+import { useRouter } from "next/navigation";
+import { useGlobalContext } from "../context/GlobalContext";
 
-type Props = {};
-
-const CircuitsTable = (props: Props) => {
-  const [circuits, setCircuits] = useState([]);
-
-  useEffect(() => {
-    (async () => {
-      const resp = await fetch("http://localhost:3000/api/circuits", {
-        method: "GET",
-        cache: "no-store",
-      });
-      const json = await resp.json();
-      setCircuits(
-        json.circuits.sort((a: Circuit, b: Circuit) => a.round - b.round)
-      );
-    })();
-  }, []);
+const CircuitsTable = () => {
+  const { circuits } = useGlobalContext();
 
   return (
     <div>
@@ -43,8 +29,13 @@ const CircuitsTable = (props: Props) => {
 const CircuitRow = ({ circuit }: { circuit: Circuit }) => {
   const { round, grandPrix, circuitName, country, city, flag, raceDate } =
     circuit;
+
+  const router = useRouter();
+
+  const handleClick = () => router.push(`/circuit/${round}`);
+
   return (
-    <tr>
+    <tr className="hover:cursor-pointer" onClick={handleClick}>
       <th>{round}</th>
       <td>{`${flag} ${country}`}</td>
       <td>{circuitName}</td>

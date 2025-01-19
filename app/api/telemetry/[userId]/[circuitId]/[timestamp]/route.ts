@@ -14,8 +14,6 @@ export const GET = async (
     const telemetry = await (await fetch(telemetryUrl)).text();
     return NextResponse.json({ telemetry }, { status: 200 });
   } catch (error) {
-    console.log(error);
-
     return NextResponse.json({ message: "Error", error }, { status: 500 });
   }
 };

@@ -11,8 +11,6 @@ export const GET = async (
     const laps = await Lap.find({ circuit: circuitId }).sort("lapTime");
     return NextResponse.json({ laps }, { status: 200 });
   } catch (error) {
-    console.log(error);
-
     return NextResponse.json({ message: "Error", error }, { status: 500 });
   }
 };

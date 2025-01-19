@@ -6,7 +6,9 @@ export const GET = async (
   req: NextRequest,
   { params }: { params: { [key: string]: string } }
 ) => {
-  const grandPrix = params.grandPrix;
+  const grandPrix = params.acName;
+  console.log(grandPrix);
+
   try {
     const circuit = await Circuit.findOne({ grandPrix });
     return NextResponse.json({ circuit }, { status: 200 });

@@ -243,7 +243,6 @@ mouseG
     });
 
     d3.selectAll(".mouse-per-line").attr("transform", function (d, i) {
-      console.log(width / mouse[0]);
       var xDate = x.invert(mouse[0]),
         bisect = d3.bisector(function (d) {
           return d.date;

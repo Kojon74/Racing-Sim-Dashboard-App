@@ -4,7 +4,7 @@ import { getDownloadURL, ref } from "firebase/storage";
 import * as d3 from "d3";
 import { Lap } from "@/app/(models)/Lap";
 import { storage } from "@/app/utils/firebase";
-import SharedAxisChart from "./SharedAxisChart";
+import SharedAxisChart from "../circuit/[round]/SharedAxisChart";
 
 type Props = { laps: Lap[] };
 
@@ -53,6 +53,7 @@ const Charts = ({ laps }: Props) => {
     return await d3.csv(url, d3.autoType);
   };
 
+  // TODO: check
   const getDelta = (baseLap, curLap) =>
     baseLap.map(
       ({ distance_offset: d, time_elapsed: t }) =>

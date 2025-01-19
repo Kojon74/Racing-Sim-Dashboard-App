@@ -11,7 +11,6 @@ const Page = () => {
 
   const handleSignup = async () => {
     const validInputs = checkInputs();
-    console.log(validInputs);
 
     if (!validInputs) return;
     // Check if username exists already
@@ -20,7 +19,6 @@ const Page = () => {
       cache: "no-store",
     });
     const { user } = await resp.json();
-    console.log(user);
     if (user) {
       setErrors((prev) => ({ ...prev, username: "Username exists" }));
       return;

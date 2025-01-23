@@ -23,7 +23,7 @@ const LapsTable = ({ laps, setSelectedLaps }: Props) => {
         <tbody>
           {laps.map((lap, i) => (
             <LapRow
-              key={lap._id}
+              key={lap._id.toString()}
               lap={lap}
               place={i + 1}
               setSelectedLaps={setSelectedLaps}

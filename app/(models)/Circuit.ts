@@ -1,4 +1,4 @@
-import mongoose, { InferSchemaType, Schema } from "mongoose";
+import mongoose, { HydratedDocument, InferSchemaType, Schema } from "mongoose";
 
 mongoose.connect(process.env.MONGODB_URI as string);
 mongoose.Promise = global.Promise;
@@ -19,6 +19,6 @@ const circuitSchema = new Schema({
 const Circuit =
   mongoose.models.Circuit || mongoose.model("Circuit", circuitSchema);
 
-export type Circuit = InferSchemaType<typeof circuitSchema>;
+export type Circuit = HydratedDocument<InferSchemaType<typeof circuitSchema>>;
 
 export default Circuit;

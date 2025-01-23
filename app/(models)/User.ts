@@ -1,4 +1,5 @@
 import mongoose, { InferSchemaType, Schema } from "mongoose";
+import { HydratedDocument } from "mongoose";
 
 mongoose.connect(process.env.MONGODB_URI as string);
 mongoose.Promise = global.Promise;
@@ -10,6 +11,6 @@ const userSchema = new Schema({
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);
 
-export type User = InferSchemaType<typeof userSchema>;
+export type User = HydratedDocument<InferSchemaType<typeof userSchema>>;
 
 export default User;

@@ -40,3 +40,7 @@ h1 {
 h2 {
   @apply text-6xl text-slate-300
 }
+
+h3 {
+  @apply text-4xl text-slate-300
+}

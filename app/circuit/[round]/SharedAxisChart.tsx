@@ -3,7 +3,10 @@ import { useEffect, useRef } from "react";
 import * as d3 from "d3";
 import { Lap } from "../../(models)/Lap";
 import { Circuit } from "@/app/(models)/Circuit";
+import { LapTelemetry } from "./types";
+import { capitalizeFirstLetter } from "@/app/utils/stringUtils";
 
+// TODO: lapsData type
 type Props = {
   laps: Lap[];
   lapsData: any;
@@ -22,53 +25,7 @@ const CHARTS = {
 };
 
 const SharedAxisChart = ({ laps, lapsData, dims, circuit }: Props) => {
-  const svgRef = useRef();
-
-  const colours = d3.scaleOrdinal(d3.schemeCategory10);
-
-  const lineChart = (svg, xScale, field, i, yScalePct = true) => {
-    // setting the scaling
-    const yScaleDomain = yScalePct
-      ? [0, 1]
-      : [
-          d3.min(lapsData.flat(), (d) => d[field]),
-          d3.max(lapsData.flat(), (d) => d[field]),
-        ];
-    const yScale = d3
-      .scaleLinear()
-      .domain(yScaleDomain)
-      .range([dims.h * (i + 1) + dims.m * i, (dims.h + dims.m) * i]);
-
-    const yAxis = d3.axisLeft(yScale);
-    svg.append("g").call(yAxis);
-
-    // y-axis label
-    svg
-      .append("text")
-      .attr("text-anchor", "middle")
-      .attr("transform", "rotate(-90)")
-      .attr("y", -dims.m + 25)
-      .attr("x", (-(2 * i + 1) * dims.h) / 2 - i * dims.m)
-      .attr("fill", "white")
-      .text(capitalizeFirstLetter(field));
-
-    // setting up the data for the svg
-    const line = d3
-      .line()
-      .x((d) => xScale(d.distance_offset))
-      .y((d) => yScale(d[field]));
-
-    svg
-      .selectAll(".line")
-      .data(lapsData)
-      .join("path")
-      .attr("d", (d) => line(d))
-      .attr("stroke", (d, i) => colours(i))
-      .attr("fill", "none");
-    // .attr("class", "line");
-
-    return yScale;
-  };
+  const svgRef = useRef(null);
 
   useEffect(() => {
     const height = (dims.h + dims.m) * Object.keys(CHARTS).length + dims.m;
@@ -116,8 +73,19 @@ const SharedAxisChart = ({ laps, lapsData, dims, circuit }: Props) => {
     });
 
     // Draw line charts
-    Object.keys(CHARTS).map((field: string, i: number) =>
-      yScales.push(lineChart(svg, xScale, field, i, CHARTS[field].yScalePct))
+    (Object.keys(CHARTS) as Array<keyof typeof CHARTS>).map(
+      (field, i: number) =>
+        yScales.push(
+          lineChart(
+            lapsData,
+            svg,
+            xScale,
+            field,
+            i,
+            dims,
+            CHARTS[field].yScalePct
+          )
+        )
     );
 
     // const lines = document.getElementsByClassName("line");
@@ -202,12 +170,64 @@ const SharedAxisChart = ({ laps, lapsData, dims, circuit }: Props) => {
         "transform",
         `translate(0,${(dims.h + dims.m) * Object.keys(CHARTS).length})`
       );
-  }, [lapsData]);
-
-  const capitalizeFirstLetter = (str: string) =>
-    str.charAt(0).toUpperCase() + str.slice(1);
+  }, [lapsData, circuit, dims]);
 
   return <svg ref={svgRef} style={{ margin: dims.m }}></svg>;
+};
+
+const lineChart = (
+  lapsData: LapTelemetry[][],
+  svg: d3.Selection<null, unknown, null, undefined>,
+  xScale: d3.ScaleLinear<number, number, never>,
+  field: keyof typeof CHARTS,
+  i: number,
+  dims: { h: number; w: number; m: number },
+  yScalePct = true
+) => {
+  const colours = d3
+    .scaleOrdinal(d3.schemeCategory10)
+    .domain(Array.from({ length: 10 }, (_, i) => i.toString()));
+
+  // setting the scaling
+  const yScaleDomain: number[] = yScalePct
+    ? [0, 1]
+    : [
+        d3.min(lapsData.flat(), (d) => d[field]) ?? 0,
+        d3.max(lapsData.flat(), (d) => d[field]) ?? 0,
+      ];
+  const yScale = d3
+    .scaleLinear()
+    .domain(yScaleDomain)
+    .range([dims.h * (i + 1) + dims.m * i, (dims.h + dims.m) * i]);
+
+  const yAxis = d3.axisLeft(yScale);
+  svg.append("g").call(yAxis);
+
+  // y-axis label
+  svg
+    .append("text")
+    .attr("text-anchor", "middle")
+    .attr("transform", "rotate(-90)")
+    .attr("y", -dims.m + 25)
+    .attr("x", (-(2 * i + 1) * dims.h) / 2 - i * dims.m)
+    .attr("fill", "white")
+    .text(capitalizeFirstLetter(field));
+
+  // setting up the data for the svg
+  const line = d3
+    .line<LapTelemetry>()
+    .x((d) => xScale(d.distance_offset))
+    .y((d) => yScale(d[field]));
+
+  svg
+    .selectAll(".line")
+    .data(lapsData)
+    .join("path")
+    .attr("d", (d) => line(d))
+    .attr("stroke", (d, i) => colours(i.toString()))
+    .attr("fill", "none");
+
+  return yScale;
 };
 
 export default SharedAxisChart;

@@ -27,8 +27,7 @@ const CircuitsTable = () => {
 };
 
 const CircuitRow = ({ circuit }: { circuit: Circuit }) => {
-  const { round, grandPrix, circuitName, country, city, flag, raceDate } =
-    circuit;
+  const { round, circuitName, country, flag } = circuit;
 
   const router = useRouter();
 

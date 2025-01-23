@@ -1,8 +1,17 @@
 import Lap from "@/app/(models)/Lap";
+import { Schema } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
 // Get circuit matching circuit-name
-export const GET = async (req: NextRequest, { params }) => {
+// Might have to change params type
+export const GET = async (
+  req: NextRequest,
+  {
+    params,
+  }: {
+    params: { circuitId: Schema.Types.ObjectId; userId: Schema.Types.ObjectId };
+  }
+) => {
   const { circuitId, userId } = params;
 
   try {

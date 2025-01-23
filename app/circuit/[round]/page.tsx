@@ -79,7 +79,7 @@ const Page = ({ params }: Props) => {
         Analyze
       </button>
       <LapsTable laps={displayLaps} setSelectedLaps={setSelectedLaps} />
-      <CircuitSVG tag={circuit.tag} />
+      <CircuitSVG tag={circuit.tag} circuitName={circuit.circuitName} />
       <Charts laps={analyzeLaps} circuit={circuit} />
     </section>
   );

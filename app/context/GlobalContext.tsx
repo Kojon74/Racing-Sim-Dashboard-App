@@ -1,9 +1,20 @@
 "use client";
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { Circuit } from "../(models)/Circuit";
 
-const GlobalContext = createContext(null);
-const GlobalProvider = ({ children }) => {
+const defaultValues = { circuits: [] };
+
+const GlobalContext = createContext<ContextType>(defaultValues);
+
+type Props = { children: ReactNode };
+
+const GlobalProvider = ({ children }: Props) => {
   const [circuits, setCircuits] = useState([]);
 
   useEffect(() => {
@@ -25,6 +36,8 @@ const GlobalProvider = ({ children }) => {
     </GlobalContext.Provider>
   );
 };
+
+type ContextType = { circuits: any };
 
 const useGlobalContext = () => useContext(GlobalContext);
 

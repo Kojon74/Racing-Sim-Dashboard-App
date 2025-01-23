@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import LapsTable from "./LapsTable";
 import { Lap } from "@/app/(models)/Lap";
 import Charts from "./Charts";
+import CircuitSVG from "./CircuitSVG";
 
 type Props = { params: { round: string } };
 
@@ -66,19 +67,20 @@ const Page = ({ params }: Props) => {
   return (
     <section>
       <h1>{`${circuit.grandPrix} Grand Prix ${circuit.flag}`}</h1>
-      <h2>{circuit.circuitName}</h2>
-      <button className="btn mt-5" onClick={handleToggleDisplayLaps}>
+      <h2>{`${circuit.circuitName} • ${circuit.city}`}</h2>
+      <button className="btn my-5" onClick={handleToggleDisplayLaps}>
         Show {showAllLaps ? "Best" : "All"} Laps
       </button>
       <button
-        className="btn mt-5 float-right bg-orange-500 text-white hover:bg-orange-500 hover:opacity-70  disabled:bg-orange-500 disabled:text-white disabled:opacity-30"
+        className="btn my-5 float-right bg-orange-500 text-white hover:bg-orange-500 hover:opacity-70  disabled:bg-orange-500 disabled:text-white disabled:opacity-30"
         onClick={() => setAnalyzeLaps(selectedLaps)}
         disabled={!selectedLaps.length}
       >
         Analyze
       </button>
       <LapsTable laps={displayLaps} setSelectedLaps={setSelectedLaps} />
-      <Charts laps={analyzeLaps} />
+      <CircuitSVG tag={circuit.tag} />
+      <Charts laps={analyzeLaps} circuit={circuit} />
     </section>
   );
 };

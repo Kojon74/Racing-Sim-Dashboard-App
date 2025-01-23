@@ -2,24 +2,26 @@
 import { useEffect, useRef } from "react";
 import * as d3 from "d3";
 import { Lap } from "../../(models)/Lap";
+import { Circuit } from "@/app/(models)/Circuit";
 
 type Props = {
   laps: Lap[];
   lapsData: any;
   dims: { h: number; w: number; m: number };
+  circuit: Circuit;
 };
 
 const CHARTS = {
-  delta: { yScalePct: false },
-  speed: { yScalePct: false },
-  throttle: { yScalePct: true },
-  brake: { yScalePct: true },
-  gear: { yScalePct: false },
-  rpm: { yScalePct: false },
-  drs: { yScalePct: false },
+  delta: { yScalePct: false, units: "(s)" },
+  speed: { yScalePct: false, units: "(km/h)" },
+  throttle: { yScalePct: true, units: "" },
+  brake: { yScalePct: true, units: "" },
+  gear: { yScalePct: false, units: "" },
+  rpm: { yScalePct: false, units: "" },
+  drs: { yScalePct: false, units: "" },
 };
 
-const SharedAxisChart = ({ laps, lapsData, dims }: Props) => {
+const SharedAxisChart = ({ laps, lapsData, dims, circuit }: Props) => {
   const svgRef = useRef();
 
   const colours = d3.scaleOrdinal(d3.schemeCategory10);
@@ -69,16 +71,51 @@ const SharedAxisChart = ({ laps, lapsData, dims }: Props) => {
   };
 
   useEffect(() => {
+    const height = (dims.h + dims.m) * Object.keys(CHARTS).length + dims.m;
     // Set up SVG canvas
     const svg = d3
       .select(svgRef.current)
       .attr("width", dims.w)
-      .attr("height", (dims.h + dims.m) * Object.keys(CHARTS).length + dims.m)
+      .attr("height", height)
       .style("overflow", "visible");
 
     // Set up scales
     const xScale = d3.scaleLinear().domain([0, 1]).range([0, dims.w]);
     const yScales = [];
+
+    // Draw corner vertical lines under line charts
+    circuit.corners.forEach((cornerDist) =>
+      svg
+        .append("line")
+        .attr("x1", xScale(cornerDist / circuit.length))
+        .attr("x2", xScale(cornerDist / circuit.length))
+        .attr("y1", 0)
+        .attr("y2", height - dims.m)
+        .attr("stroke", "#475569")
+        .attr("stroke-width", 2)
+        .attr("stroke-dasharray", "4 2")
+    );
+
+    // Draw corner vertical line labels
+    Object.keys(CHARTS).forEach((_, chartIdx) => {
+      svg
+        .append("text")
+        .attr("x", 0)
+        .attr("y", (dims.h + dims.m) * chartIdx + dims.h + dims.m / 2)
+        .attr("fill", "white")
+        .text("Turn");
+      circuit.corners.forEach((cornerDist, cornerIdx) =>
+        svg
+          .append("text")
+          .attr("text-anchor", "middle")
+          .attr("x", xScale(cornerDist / circuit.length))
+          .attr("y", (dims.h + dims.m) * chartIdx + dims.h + dims.m / 2)
+          .attr("fill", "white")
+          .text(cornerIdx + 1)
+      );
+    });
+
+    // Draw line charts
     Object.keys(CHARTS).map((field: string, i: number) =>
       yScales.push(lineChart(svg, xScale, field, i, CHARTS[field].yScalePct))
     );

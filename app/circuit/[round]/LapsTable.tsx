@@ -9,27 +9,29 @@ type Props = {
 
 const LapsTable = ({ laps, setSelectedLaps }: Props) => {
   return (
-    <table className="table">
-      <thead>
-        <tr>
-          <th></th>
-          <th>Rank</th>
-          <th>Name</th>
-          <th>Lap Time</th>
-          <th>Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        {laps.map((lap, i) => (
-          <LapRow
-            key={lap._id}
-            lap={lap}
-            place={i + 1}
-            setSelectedLaps={setSelectedLaps}
-          />
-        ))}
-      </tbody>
-    </table>
+    <div className="card bg-base-100">
+      <table className="table text-base">
+        <thead>
+          <tr className="text-base">
+            <th>Select</th>
+            <th>Rank</th>
+            <th>Name</th>
+            <th>Lap Time</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {laps.map((lap, i) => (
+            <LapRow
+              key={lap._id}
+              lap={lap}
+              place={i + 1}
+              setSelectedLaps={setSelectedLaps}
+            />
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 };
 

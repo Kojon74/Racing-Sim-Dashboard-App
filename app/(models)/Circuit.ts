@@ -11,6 +11,9 @@ const circuitSchema = new Schema({
   city: { type: String, required: true },
   flag: { type: String, required: true },
   raceDate: { type: Date, required: true },
+  corners: { type: [Number], required: true },
+  tag: { type: String, required: true },
+  length: { type: Number, required: true },
 });
 
 const Circuit =

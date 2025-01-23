@@ -5,8 +5,9 @@ import { getDownloadURL, ref } from "firebase/storage";
 import { useEffect, useState } from "react";
 import * as d3 from "d3";
 import SharedAxisChart from "./SharedAxisChart";
+import { Circuit } from "@/app/(models)/Circuit";
 
-type Props = { laps: Lap[] };
+type Props = { laps: Lap[]; circuit: Circuit };
 
 type LapTelemetry = {
   distance_offset: number;
@@ -30,7 +31,7 @@ const Fields = {
   drs: { chart: true, yScalePct: false },
 };
 
-const Charts = ({ laps }: Props) => {
+const Charts = ({ laps, circuit }: Props) => {
   const [chartDims, setChartDims] = useState({ w: 0, h: 250, m: 75 });
   const [lapsData, setLapsData] = useState<
     {
@@ -101,8 +102,13 @@ const Charts = ({ laps }: Props) => {
   if (!Object.keys(lapsData).length) return;
 
   return (
-    <section>
-      <SharedAxisChart laps={laps} lapsData={lapsData} dims={chartDims} />
+    <section className="card bg-base-100">
+      <SharedAxisChart
+        laps={laps}
+        lapsData={lapsData}
+        dims={chartDims}
+        circuit={circuit}
+      />
     </section>
   );
 };

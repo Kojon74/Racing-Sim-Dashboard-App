@@ -36,7 +36,7 @@ const Charts = ({ laps, circuit }: Props) => {
 
   const getLapData = async (lap: Lap) => {
     const url = await getDownloadURL(
-      ref(storage, `${lap.user.id}/${lap.circuit}/${lap.date.getTime()}.csv`)
+      ref(storage, `${lap.user._id}/${lap.circuit}/${lap.date.getTime()}.csv`)
     );
     const lapData = (await d3.csv(url, d3.autoType)) as LapTelemetry[];
     return lapData;

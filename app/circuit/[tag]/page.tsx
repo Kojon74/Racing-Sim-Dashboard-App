@@ -1,21 +1,22 @@
-import { Lap } from "@/app/(models)/Lap";
+import Lap from "@/app/(models)/Lap";
 import ClientPage from "./ClientPage";
+import Circuit from "@/app/(models)/Circuit";
 
 type Props = { params: { tag: string } };
 
 const fetchLaps = async (tag: string) => {
-  const resp = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/laps/${tag}`,
-    {
-      method: "GET",
-      cache: "no-store",
-    }
-  );
-  const json = await resp.json();
-  const laps = json.laps.map((lap: Lap) => ({
-    ...lap,
-    date: new Date(lap.date),
-  }));
+  const circuit = await Circuit.findOne({ tag });
+  const lapsRaw = await Lap.find({ circuit: circuit._id }).sort("lapTime");
+  const laps = lapsRaw.map((lap) => {
+    const lapObj = lap.toObject();
+    return {
+      ...lapObj,
+      _id: lapObj._id.toString(),
+      circuit: lapObj.circuit.toString(),
+      user: { ...lapObj.user, _id: lapObj.user._id.toString() },
+      date: new Date(lap.date),
+    };
+  });
   return laps;
 };
 

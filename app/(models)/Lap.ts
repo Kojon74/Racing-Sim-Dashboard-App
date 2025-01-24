@@ -6,7 +6,7 @@ mongoose.Promise = global.Promise;
 const lapSchema = new Schema({
   user: {
     type: {
-      id: { type: Schema.Types.ObjectId, ref: "User", required: true },
+      _id: { type: Schema.Types.ObjectId, ref: "User", required: true },
       username: { type: String, required: true },
     },
     required: true,

@@ -19,13 +19,10 @@ const GlobalProvider = ({ children }: Props) => {
 
   useEffect(() => {
     (async () => {
-      const resp = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/circuits`,
-        {
-          method: "GET",
-          cache: "no-store",
-        }
-      );
+      const resp = await fetch("/api/circuits", {
+        method: "GET",
+        cache: "no-store",
+      });
       const json = await resp.json();
       setCircuits(
         json.circuits.sort((a: Circuit, b: Circuit) => a.round - b.round)

@@ -1,3 +1,4 @@
+import Circuit from "@/app/(models)/Circuit";
 import Lap from "@/app/(models)/Lap";
 import { Schema } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
@@ -9,15 +10,14 @@ export const GET = async (
   {
     params,
   }: {
-    params: { circuitId: Schema.Types.ObjectId; userId: Schema.Types.ObjectId };
+    params: { tag: Schema.Types.ObjectId; userId: Schema.Types.ObjectId };
   }
 ) => {
-  const { circuitId, userId } = params;
-
   try {
+    const circuit = await Circuit.findOne({ tag: params.tag });
     const bestLap = await Lap.findOne({
-      circuit: circuitId,
-      "user.id": userId,
+      circuit: circuit._id,
+      "user.id": params.userId,
     }).sort("lapTime");
 
     return NextResponse.json({ bestLap }, { status: 200 });

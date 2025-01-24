@@ -14,16 +14,19 @@ const Page = () => {
 
     if (!validInputs) return;
     // Check if username exists already
-    const resp = await fetch(`http://localhost:3000/api/users/${username}/`, {
-      method: "GET",
-      cache: "no-store",
-    });
+    const resp = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/users/${username}/`,
+      {
+        method: "GET",
+        cache: "no-store",
+      }
+    );
     const { user } = await resp.json();
     if (user) {
       setErrors((prev) => ({ ...prev, username: "Username exists" }));
       return;
     }
-    fetch(`http://localhost:3000/api/users/`, {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/`, {
       method: "POST",
       cache: "no-store",
       body: JSON.stringify({ username }),

@@ -27,11 +27,11 @@ const CircuitsTable = () => {
 };
 
 const CircuitRow = ({ circuit }: { circuit: Circuit }) => {
-  const { round, circuitName, country, flag } = circuit;
+  const { round, circuitName, country, flag, tag } = circuit;
 
   const router = useRouter();
 
-  const handleClick = () => router.push(`/circuit/${round}`);
+  const handleClick = () => router.push(`/circuit/${tag}`);
 
   return (
     <tr className="hover:cursor-pointer" onClick={handleClick}>

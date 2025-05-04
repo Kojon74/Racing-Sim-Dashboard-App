@@ -13,7 +13,9 @@ const CustomNavbar = (props: Props) => {
   return (
     <Navbar className="bg-black" maxWidth="full">
       <NavbarBrand>
-        <h3 className="text-2xl">Delta</h3>
+        <Link href="/">
+          <h3>Delta</h3>
+        </Link>
       </NavbarBrand>
       <NavbarContent justify="end">
         <NavbarItem>

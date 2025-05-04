@@ -2,15 +2,19 @@
 import { Lap } from "@/app/(models)/Lap";
 import { storage } from "@/app/utils/firebase";
 import { getDownloadURL, ref } from "firebase/storage";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import * as d3 from "d3";
 import SharedAxisChart from "./SharedAxisChart";
 import { Circuit } from "@/app/(models)/Circuit";
 import { LapTelemetry } from "./types";
 
-type Props = { laps: Lap[]; circuit: Circuit };
+type Props = { laps: Lap[]; circuit: Circuit; setHoverPercentage: any };
 
-const Charts = ({ laps, circuit }: Props) => {
+const Charts = memo(function Charts({
+  laps,
+  circuit,
+  setHoverPercentage,
+}: Props) {
   const [lapsData, setLapsData] = useState<LapTelemetry[][]>([]);
 
   const chartDims = {
@@ -52,10 +56,11 @@ const Charts = ({ laps, circuit }: Props) => {
         lapsData={lapsData}
         dims={chartDims}
         circuit={circuit}
+        setHoverPercentage={setHoverPercentage}
       />
     </section>
   );
-};
+});
 
 const updateDataDelta = (curLap: LapTelemetry[], baseLap: LapTelemetry[]) =>
   curLap.map((data) => ({

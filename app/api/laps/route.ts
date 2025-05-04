@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 export const POST = async (req: NextRequest) => {
   try {
     const { lapTime, circuit, user, sectorTimes, timestamp } = await req.json();
+    console.log(lapTime)
     const newLap = Lap.create({
       lapTime,
       circuit,

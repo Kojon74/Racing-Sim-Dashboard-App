@@ -16,6 +16,7 @@ const ClientPage = ({ tag, laps }: Props) => {
   const [displayLaps, setDisplayLaps] = useState<Lap[]>(getBestLaps(laps));
   const [selectedLaps, setSelectedLaps] = useState<Lap[]>([]);
   const [analyzeLaps, setAnalyzeLaps] = useState<Lap[]>([]);
+  const [hoverPercentage, setHoverPercentage] = useState(0);
 
   const circuit = circuits.find((circuit: Circuit) => circuit.tag === tag);
 
@@ -42,8 +43,16 @@ const ClientPage = ({ tag, laps }: Props) => {
         Analyze
       </button>
       <LapsTable laps={displayLaps} setSelectedLaps={setSelectedLaps} />
-      <CircuitSVG tag={circuit.tag} circuitName={circuit.circuitName} />
-      <Charts laps={analyzeLaps} circuit={circuit} />
+      <CircuitSVG
+        tag={circuit.tag}
+        circuitName={circuit.circuitName}
+        percentage={hoverPercentage}
+      />
+      <Charts
+        laps={analyzeLaps}
+        circuit={circuit}
+        setHoverPercentage={setHoverPercentage}
+      />
     </section>
   );
 };

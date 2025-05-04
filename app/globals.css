@@ -34,13 +34,21 @@ body {
 }
 
 h1 {
-  @apply text-8xl font-black
+  @apply text-7xl font-extrabold
 }
 
 h2 {
-  @apply text-6xl text-slate-300
+  @apply text-5xl text-slate-300
 }
 
 h3 {
-  @apply text-4xl text-slate-300
+  @apply text-3xl text-slate-300
+}
+
+th {
+  @apply text-base
+}
+
+td {
+  @apply text-base
 }

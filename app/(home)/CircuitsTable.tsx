@@ -7,11 +7,11 @@ const CircuitsTable = () => {
   const { circuits } = useGlobalContext();
 
   return (
-    <div>
-      <table className="table">
+    <div className="card bg-base-100 p-5 my-5">
+      <table className="table ">
         <thead>
           <tr>
-            <th>Round</th>
+            <th>#</th>
             <th>Country</th>
             <th>Circuit</th>
           </tr>
@@ -35,7 +35,7 @@ const CircuitRow = ({ circuit }: { circuit: Circuit }) => {
 
   return (
     <tr className="hover:cursor-pointer" onClick={handleClick}>
-      <th>{round}</th>
+      <td>{round}</td>
       <td>{`${flag} ${country}`}</td>
       <td>{circuitName}</td>
     </tr>

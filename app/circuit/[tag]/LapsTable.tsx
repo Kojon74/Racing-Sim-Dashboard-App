@@ -10,9 +10,9 @@ type Props = {
 const LapsTable = ({ laps, setSelectedLaps }: Props) => {
   return (
     <div className="card bg-base-100">
-      <table className="table text-base">
+      <table className="table">
         <thead>
-          <tr className="text-base">
+          <tr>
             <th>Select</th>
             <th>Rank</th>
             <th>Name</th>

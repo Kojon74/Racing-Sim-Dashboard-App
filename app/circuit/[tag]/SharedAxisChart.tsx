@@ -9,9 +9,10 @@ import { capitalizeFirstLetter } from "@/app/utils/stringUtils";
 // TODO: lapsData type
 type Props = {
   laps: Lap[];
-  lapsData: any;
+  lapsData: LapTelemetry[][];
   dims: { h: number; w: number; m: number };
   circuit: Circuit;
+  setHoverPercentage: any;
 };
 
 const CHARTS = {
@@ -24,8 +25,19 @@ const CHARTS = {
   drs: { yScalePct: false, units: "" },
 };
 
-const SharedAxisChart = ({ laps, lapsData, dims, circuit }: Props) => {
+const SharedAxisChart = ({
+  laps,
+  lapsData,
+  dims,
+  circuit,
+  setHoverPercentage,
+}: Props) => {
+  console.log("RERENDER");
   const svgRef = useRef(null);
+
+  useEffect(() => {
+    d3.select(svgRef.current).selectAll("*").remove();
+  }, [lapsData]);
 
   useEffect(() => {
     const height = (dims.h + dims.m) * Object.keys(CHARTS).length + dims.m;
@@ -38,7 +50,7 @@ const SharedAxisChart = ({ laps, lapsData, dims, circuit }: Props) => {
 
     // Set up scales
     const xScale = d3.scaleLinear().domain([0, 1]).range([0, dims.w]);
-    const yScales = [];
+    const yScales: d3.ScaleLinear<number, number, never>[] = [];
 
     // Draw corner vertical lines under line charts
     circuit.corners.forEach((cornerDist) =>
@@ -88,16 +100,16 @@ const SharedAxisChart = ({ laps, lapsData, dims, circuit }: Props) => {
         )
     );
 
-    // const lines = document.getElementsByClassName("line");
+    const lines = document.getElementsByClassName("line");
 
-    // const vertical = svg
-    //   .append("line")
-    //   .attr("stroke", "#fff")
-    //   .attr("x1", 0)
-    //   .attr("x2", 0)
-    //   .attr("y1", 0)
-    //   .attr("y2", (dims.h + dims.m) * Object.keys(CHARTS).length - dims.m)
-    //   .style("opacity", 1e-6);
+    const vertical = svg
+      .append("line")
+      .attr("stroke", "#fff")
+      .attr("x1", 0)
+      .attr("x2", 0)
+      .attr("y1", 0)
+      .attr("y2", (dims.h + dims.m) * Object.keys(CHARTS).length - dims.m)
+      .style("opacity", 1e-6);
 
     // var tooltips = vertical
     //   .selectAll(".tooltip")
@@ -116,49 +128,33 @@ const SharedAxisChart = ({ laps, lapsData, dims, circuit }: Props) => {
 
     // tooltips.append("text").attr("transform", "translate(10,3)");
 
-    // svg
-    //   .on("mousemove", (e, d) => {
-    //     const pageX = e.pageX - dims.m;
-    //     // const distanceX = xScale.invert(pageX);
-    //     // const leftIdx = bisect();
-    //     vertical.attr("x1", pageX).attr("x2", pageX).style("opacity", 1);
+    svg
+      .on("mousemove", (e) => {
+        const pageX = e.pageX - dims.m - 24; // TODO: fix, due to the card
+        //  Move vertical line
+        vertical.attr("x1", pageX).attr("x2", pageX).style("opacity", 1);
+        const xPos = xScale.invert(pageX);
+        setHoverPercentage(xPos);
 
-    //     d3.selectAll(".tooltip").attr("transform", function (d, i) {
-    //       const xPos = xScale.invert(pageX);
+        // d3.selectAll(".tooltip").attr("transform", function (d, i) {
+        //   const bisect = d3.bisector(
+        //     (d: LapTelemetry) => d.distance_offset
+        //   ).right;
+        // const idx = bisect(lapsData[0], xPos);
 
-    //       const bisect = d3.bisector(function (d) {
-    //         return d.distance_offset;
-    //       }).right;
-    //       const idx = bisect(lapsData[i], xPos);
-    //       Object.keys(CHARTS).map((field, j) => {
-    //         const yPos = yScales[j].invert(lapsData[i][idx][field]);
-    //       });
+        //   Object.keys(CHARTS).map((field, j) => {
+        //     const yPos = yScales[j].invert(
+        //       lapsData[i][idx][field as keyof typeof CHARTS]
+        //     );
+        //   });
 
-    //       // let beginning = 0;
-    //       // let end = lines[i].getTotalLength();
-    //       // let target = null;
-
-    //       // while (true) {
-    //       //   target = Math.floor((beginning + end) / 2);
-    //       //   pos = lines[i].getPointAtLength(target);
-    //       //   if ((target === end || target === beginning) && pos.x !== pageX) {
-    //       //     break;
-    //       //   }
-    //       //   if (pos.x > pageX) end = target;
-    //       //   else if (pos.x < pageX) beginning = target;
-    //       //   else break; //position found
-    //       // }
-
-    //       // d3.select(this)
-    //       //   .select("text")
-    //       //   .text(yScales[i].invert(pos.y).toFixed(2));
-
-    //       return "translate(" + pageX + "," + pageX + ")";
-    //     });
-    //   })
-    //   .on("mouseout", () => {
-    //     vertical.style("opacity", 1e-6);
-    //   });
+        //   return "translate(" + pageX + "," + pageX + ")";
+        // });
+      })
+      .on("mouseout", () => {
+        vertical.style("opacity", 1e-6);
+        setHoverPercentage(0);
+      });
 
     // setting the axes
     const xAxis = d3.axisBottom(xScale).tickValues([]).tickSize(0);
@@ -170,7 +166,7 @@ const SharedAxisChart = ({ laps, lapsData, dims, circuit }: Props) => {
         "transform",
         `translate(0,${(dims.h + dims.m) * Object.keys(CHARTS).length})`
       );
-  }, [lapsData, circuit, dims]);
+  }, [lapsData, circuit, dims, setHoverPercentage]);
 
   return <svg ref={svgRef} style={{ margin: dims.m }}></svg>;
 };
@@ -219,9 +215,9 @@ const lineChart = (
     .x((d) => xScale(d.distance_offset))
     .y((d) => yScale(d[field]));
 
-  svg
-    .selectAll(".line")
-    .data(lapsData)
+  const charts = svg.selectAll(".line").data(lapsData);
+
+  charts
     .join("path")
     .attr("d", (d) => line(d))
     .attr("stroke", (d, i) => colours(i.toString()))

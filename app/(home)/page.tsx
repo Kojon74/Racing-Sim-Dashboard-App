@@ -5,7 +5,7 @@ type Props = {};
 const Page = (props: Props) => {
   return (
     <section>
-      <h1 className="text-4xl">F1 Sim Racing Dashbard</h1>
+      <h1>F1 Sim Racing Dashboard</h1>
       <CircuitsTable />
     </section>
   );
